@@ -1,0 +1,5 @@
+# Alunos
+
+* Alysson Luiz Tavares da Rocha 01359689
+* José Rodrigo Lins de Barros   01349064
+* Thiago Rodrigues Leiria de Andrade    01390900
