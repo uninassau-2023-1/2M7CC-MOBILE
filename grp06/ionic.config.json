@@ -1,0 +1,7 @@
+{
+  "name": "controleAtendimento",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

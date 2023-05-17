@@ -1,0 +1,15 @@
+<div
+  *ngIf="token"
+  [routerLink]="'/token/' + token.id"
+  class="item-button"
+  [ngClass]="{
+    sgBg: token.type === 0,
+    seBg: token.type === 1,
+    spBg: token.type === 2
+  }"
+>
+  <h2>
+    {{ token.value }}
+  </h2>
+  <h6 class="token-indicator">{{ tokenTypeToString(token.type) }}</h6>
+</div>

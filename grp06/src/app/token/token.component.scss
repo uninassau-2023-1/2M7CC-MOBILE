@@ -1,0 +1,36 @@
+h2 {
+  font-weight: 600;
+  color: #fff;
+}
+
+h6 {
+  color: #fff;
+}
+
+.item-button {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+}
+
+.sgBg {
+  background-color: #868686;
+}
+
+.seBg {
+  background-color: #d17373;
+}
+
+.spBg {
+  background-color: #8c67f4;
+}
+
+.token-indicator {
+  text-align: center;
+}
