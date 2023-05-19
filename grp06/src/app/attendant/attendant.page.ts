@@ -6,17 +6,16 @@ import { TokenComponent } from "../components/token/token.component";
 import { DataService, Token } from "../services/data.service";
 
 @Component({
-  selector: "app-home",
-  templateUrl: "home.page.html",
-  styleUrls: ["home.page.scss"],
+  selector: "app-attendant",
+  templateUrl: "attendant.page.html",
+  styleUrls: ["attendant.page.scss"],
   standalone: true,
   imports: [IonicModule, CommonModule, TokenComponent],
 })
-export class HomePage {
+export class AttendantPage {
   private data = inject(DataService);
   public tokens: Token[] = [];
   private readonly userId = new Date().toTimeString();
-  public userToken: Token = {} as Token;
   public nextToken: Token = {} as Token;
   constructor() {}
 
@@ -38,8 +37,8 @@ export class HomePage {
     return this.tokens;
   }
 
-  getNewToken() {
-    this.userToken = this.data.generateNewToken(this.userId);
-    console.log(this.userToken);
+  callNewToken() {
+    /*     this.userToken = this.data.generateNewToken(this.userId);
+    console.log(this.userToken); */
   }
 }

@@ -2,20 +2,19 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 import { TokenComponent } from "../components/token/token.component";
+import { AttendantPage } from "./attendant.page";
 
-import { HomePage } from "./home.page";
-
-describe("HomePage", () => {
-  let component: HomePage;
-  let fixture: ComponentFixture<HomePage>;
+describe("AttendantPage", () => {
+  let component: AttendantPage;
+  let fixture: ComponentFixture<AttendantPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomePage, IonicModule, TokenComponent],
+      imports: [AttendantPage, IonicModule, TokenComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePage);
+    fixture = TestBed.createComponent(AttendantPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

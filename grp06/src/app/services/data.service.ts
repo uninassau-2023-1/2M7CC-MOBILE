@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
 
 export enum TokenType {
   SG = 0,
@@ -14,27 +14,27 @@ export interface Token {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class DataService {
   public tokens: Token[] = [
     {
       id: 0,
-      value: '230403-SG01',
+      value: "230403-SG01",
       type: TokenType.SG,
-      userId: '1',
+      userId: "1",
     },
     {
       id: 1,
-      value: '230403-SE01',
+      value: "230403-SE01",
       type: TokenType.SE,
-      userId: '2',
+      userId: "2",
     },
     {
       id: 2,
-      value: '230403-SP02',
+      value: "230403-SP02",
       type: TokenType.SP,
-      userId: '3',
+      userId: "3",
     },
   ];
 
