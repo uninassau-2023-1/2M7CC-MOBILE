@@ -132,11 +132,13 @@ export class DataService {
   }
 
   public removeToken(token: Token) {
-    this.tokens.splice(
+    const newTokens = [...this.tokens];
+    newTokens.splice(
       this.tokens.findIndex((item) => item.id === token.id),
       1
     );
-    this.setItem("tokens", JSON.stringify(this.tokens));
+    this.tokens = newTokens;
+    this.setItem("tokens", JSON.stringify(newTokens));
   }
 
   public findTokenByUserId(userId: string): Token | undefined {
@@ -144,9 +146,10 @@ export class DataService {
   }
 
   public generateNewToken(userId: string, customType?: TokenType): Token {
+    const localType = this.generateRandomType();
     const tokenValue = `${new Date().getFullYear()}${
       new Date().getMonth() + 1
-    }${new Date().getDate()}-${TokenType[this.generateRandomType()]}${
+    }${new Date().getDate()}-${TokenType[customType || localType]}${
       this.tokens.length
     }`;
 
@@ -156,7 +159,7 @@ export class DataService {
     const newToken: Token = {
       id: new Date().getTime(),
       value: tokenValue,
-      type: customType || TokenType.SG,
+      type: customType || localType,
       userId,
     };
 
@@ -169,11 +172,14 @@ export class DataService {
   }
 
   public getNextToken(): Token | undefined {
-    if (this.nextToken) {
+    console.log(this.nextToken);
+    if (this.nextToken.value) {
       if (this.userToken.value === this.nextToken.value) {
         this.userToken.value = `É a sua vez! ${this.userToken.value}`;
+      } else {
+        this.userToken = {} as Token;
       }
-      this.removeToken(this.nextToken);
+      this.setItem("userToken", JSON.stringify(this.userToken));
     }
     const next = this.tokens.find((item) =>
       [TokenType.SG, TokenType.SE].includes(this.nextToken.type)
@@ -184,6 +190,7 @@ export class DataService {
       this.nextToken = next;
       this.setItem("nextToken", JSON.stringify(next));
     }
+    this.removeToken(this.nextToken);
     return this.nextToken;
   }
 }

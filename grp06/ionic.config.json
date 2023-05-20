@@ -1,7 +1,8 @@
 {
   "name": "controleAtendimento",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }

@@ -6,17 +6,22 @@
   <div class="headerContainer">
     <div class="defaultElipse"></div>
     <h6 class="token">Senha autal: <br /></h6>
-    <h6 *ngIf="this.data?.nextToken?.value" class="token">
+    <h6 *ngIf="this.data.nextToken?.value" class="token">
       {{this.data.nextToken.value}}
     </h6>
   </div>
   <ion-list>
+    <h6 class="tokens-label">Senhas</h6>
     <app-tokens
       *ngFor="let token of this.data.tokens"
       [token]="token"
     ></app-tokens>
   </ion-list>
 </ion-content>
+
+<ion-button href="/home" class="ion-button">
+  <ion-icon name="arrow-back-outline"></ion-icon>
+</ion-button>
 <ion-button (click)="callNewToken()" fill="solid" size="large" color="success">
   Próxima senha
 </ion-button>
