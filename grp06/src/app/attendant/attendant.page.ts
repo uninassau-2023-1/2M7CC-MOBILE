@@ -3,7 +3,7 @@ import { Component, inject } from "@angular/core";
 import { IonicModule, RefresherCustomEvent } from "@ionic/angular";
 
 import { TokenComponent } from "../components/token/token.component";
-import { DataService, Token } from "../services/data.service";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-attendant",
@@ -13,10 +13,7 @@ import { DataService, Token } from "../services/data.service";
   imports: [IonicModule, CommonModule, TokenComponent],
 })
 export class AttendantPage {
-  private data = inject(DataService);
-  public tokens: Token[] = [];
-  private readonly userId = new Date().toTimeString();
-  public nextToken: Token = {} as Token;
+  public data = inject(DataService);
   constructor() {}
 
   refresh(ev: any) {
@@ -25,20 +22,7 @@ export class AttendantPage {
     }, 3000);
   }
 
-  ngOnInit(): void {
-    this.getTokens();
-  }
-
-  getTokens(): Token[] {
-    this.data
-      .getTokens()
-      .subscribe((tokens: Token[]) => (this.tokens = tokens));
-    this.nextToken = this.data.tokens[0];
-    return this.tokens;
-  }
-
   callNewToken() {
-    /*     this.userToken = this.data.generateNewToken(this.userId);
-    console.log(this.userToken); */
+    this.data.getNextToken();
   }
 }

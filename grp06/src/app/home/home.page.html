@@ -5,26 +5,29 @@
 
   <div class="headerContainer">
     <div class="defaultElipse"></div>
-    <h6 *ngIf="this.nextToken.value" class="token">
-      Proxima senha: <br />
-      {{this.nextToken.value}}
+    <h6 class="token">Proxima senha: <br /></h6>
+    <h6 *ngIf="this.data?.nextToken?.value" class="token">
+      {{this.data.nextToken.value}}
     </h6>
   </div>
   <div class="tokensInfo">
-    <h6 *ngIf="this.userToken.value" class="token userToken">
-      Sua senha: {{ this.userToken.value }}
+    <h6 *ngIf="this.data.userToken?.value" class="token userToken">
+      Sua senha: {{ this.data.userToken.value }}
     </h6>
     <h6 class="tokens-label">Senhas</h6>
   </div>
   <ion-list>
-    <app-tokens *ngFor="let token of this.tokens" [token]="token"></app-tokens>
+    <app-tokens
+      *ngFor="let token of this.data.tokens"
+      [token]="token"
+    ></app-tokens>
   </ion-list>
 </ion-content>
 <ion-button
   (click)="getNewToken()"
   fill="solid"
   size="large"
-  [color]="!this.userToken.value ? 'success' : 'medium'"
+  [color]="!this.data.userToken.value ? 'success' : 'medium'"
 >
   Solicitar senha
 </ion-button>

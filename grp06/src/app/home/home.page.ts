@@ -3,7 +3,7 @@ import { Component, inject } from "@angular/core";
 import { IonicModule, RefresherCustomEvent } from "@ionic/angular";
 
 import { TokenComponent } from "../components/token/token.component";
-import { DataService, Token } from "../services/data.service";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-home",
@@ -13,11 +13,8 @@ import { DataService, Token } from "../services/data.service";
   imports: [IonicModule, CommonModule, TokenComponent],
 })
 export class HomePage {
-  private data = inject(DataService);
-  public tokens: Token[] = [];
+  public data = inject(DataService);
   private readonly userId = new Date().toTimeString();
-  public userToken: Token = {} as Token;
-  public nextToken: Token = {} as Token;
   constructor() {}
 
   refresh(ev: any) {
@@ -26,20 +23,8 @@ export class HomePage {
     }, 3000);
   }
 
-  ngOnInit(): void {
-    this.getTokens();
-  }
-
-  getTokens(): Token[] {
-    this.data
-      .getTokens()
-      .subscribe((tokens: Token[]) => (this.tokens = tokens));
-    this.nextToken = this.data.tokens[0];
-    return this.tokens;
-  }
-
   getNewToken() {
-    this.userToken = this.data.generateNewToken(this.userId);
-    console.log(this.userToken);
+    this.data.generateNewToken(this.userId);
+    this.data.generateTokens();
   }
 }
