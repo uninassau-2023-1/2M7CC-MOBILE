@@ -16,7 +16,18 @@
     </h6>
     <h6 class="tokens-label">Senhas</h6>
   </div>
-  <ion-list>
+
+  <ion-list *ngIf="this.data.userTokenType === undefined">
+    <h6 class="tokens-label">Selecione seu tipo de senha!</h6>
+    <ion-button
+      *ngFor="let type of this.tokenTypeArr"
+      (click)="this.data.setUserTokenType(type.value)"
+    >
+      {{type.title}}
+    </ion-button>
+  </ion-list>
+
+  <ion-list *ngIf="this.data.userTokenType !== undefined">
     <app-tokens
       *ngFor="let token of this.data.tokens"
       [token]="token"
@@ -29,6 +40,7 @@
 </ion-button>
 
 <ion-button
+  *ngIf="this.data.userTokenType !== undefined"
   (click)="getNewToken()"
   fill="solid"
   size="large"

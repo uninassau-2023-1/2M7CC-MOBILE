@@ -19,6 +19,8 @@ export class DataService {
   private _storage: Storage | null = null;
   public nextToken: Token = {} as Token;
   public userToken: Token = {} as Token;
+  public userTokenType: TokenType | undefined = undefined;
+  private lastType: TokenType = TokenType.SP;
 
   public tokens: Token[] = [
     {
@@ -29,13 +31,13 @@ export class DataService {
     },
     {
       id: 1,
-      value: "230403-SE01",
+      value: "230403-SE02",
       type: TokenType.SE,
       userId: "2",
     },
     {
       id: 2,
-      value: "230403-SP02",
+      value: "230403-SP03",
       type: TokenType.SP,
       userId: "3",
     },
@@ -47,7 +49,6 @@ export class DataService {
 
   async ngOnInit() {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
-
     const storage = await this.storage["create"]();
     this._storage = storage;
     this.populateStorage();
@@ -62,9 +63,14 @@ export class DataService {
   }
   private async getUserTokenStorage() {
     const item = await this._storage?.get("userToken");
+    const itemType = await this._storage?.get("userTokenType");
     if (item && item != null) {
       this.setItem("userToken", item);
       this.userToken = JSON.parse(item);
+    }
+    if (itemType !== null) {
+      console.log("ITEM TYPE", itemType);
+      this.userTokenType = parseInt(JSON.parse(itemType), 10);
     }
   }
 
@@ -146,23 +152,23 @@ export class DataService {
   }
 
   public generateNewToken(userId: string, customType?: TokenType): Token {
-    const localType = this.generateRandomType();
+    const type = customType
+      ? customType
+      : this.userTokenType
+      ? this.userTokenType
+      : TokenType.SG;
     const tokenValue = `${new Date().getFullYear()}${
       new Date().getMonth() + 1
-    }${new Date().getDate()}-${TokenType[customType || localType]}${
-      this.tokens.length
-    }`;
+    }${new Date().getDate()}-${TokenType[type]}${this.tokens.length + 1}`;
 
     const userToken = this.findTokenByUserId(userId);
     if (Boolean(userToken) && userToken != undefined) return userToken;
-
     const newToken: Token = {
       id: new Date().getTime(),
       value: tokenValue,
-      type: customType || localType,
+      type: type,
       userId,
     };
-
     this.addToken(newToken);
     if (!this.userToken.value) {
       this.userToken = newToken;
@@ -171,26 +177,56 @@ export class DataService {
     return newToken;
   }
 
-  public getNextToken(): Token | undefined {
-    console.log(this.nextToken);
-    if (this.nextToken.value) {
-      if (this.userToken.value === this.nextToken.value) {
-        this.userToken.value = `É a sua vez! ${this.userToken.value}`;
-      } else {
-        this.userToken = {} as Token;
+  private checkType(item: Token): boolean {
+    const hasPriority = this.tokens.find((item) => item.type === TokenType.SP);
+    switch (this.lastType) {
+      case TokenType.SE: {
+        if (hasPriority) return item.type === TokenType.SP;
+        if (!hasPriority && item.type !== TokenType.SE)
+          return item.type === TokenType.SG;
+
+        return item.type === TokenType.SE;
       }
-      this.setItem("userToken", JSON.stringify(this.userToken));
+      case TokenType.SG: {
+        if (hasPriority) return item.type === TokenType.SP;
+        if (!hasPriority) return item.type === TokenType.SE;
+
+        return item.type === TokenType.SE;
+      }
+      default: {
+        if (![TokenType.SG, TokenType.SE].includes(item.type) && hasPriority)
+          return item.type === TokenType.SP;
+        return [TokenType.SG, TokenType.SE].includes(item.type);
+      }
     }
-    const next = this.tokens.find((item) =>
-      [TokenType.SG, TokenType.SE].includes(this.nextToken.type)
-        ? item.type === TokenType.SP
-        : item.type !== TokenType.SP
-    );
+  }
+
+  public getNextToken(): Token | undefined {
+    console.log(this.lastType);
+    const next = this.tokens.find((item) => this.checkType(item));
     if (next) {
+      if (this.userToken.value === next.value) {
+        this.userToken.value = `É a sua vez! ${this.userToken.value}`;
+        this.setItem("userToken", JSON.stringify(this.userToken));
+      }
+      if (!this.tokens.find((item) => item.id === this.userToken.id)) {
+        this.userToken = {} as Token;
+        this.userTokenType = undefined;
+        this._storage?.remove("userToken");
+        this._storage?.remove("userTokenType");
+      }
       this.nextToken = next;
+      this.lastType = next.type;
       this.setItem("nextToken", JSON.stringify(next));
+
+      this.removeToken(next);
     }
-    this.removeToken(this.nextToken);
-    return this.nextToken;
+    return next;
+  }
+
+  public setUserTokenType(type: TokenType) {
+    if (Boolean(this.userTokenType)) return;
+    this.userTokenType = type;
+    this.setItem("userTokenType", JSON.stringify(type));
   }
 }

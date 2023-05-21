@@ -21,8 +21,4 @@ export class AttendantPage {
       (ev as RefresherCustomEvent).detail.complete();
     }, 3000);
   }
-
-  callNewToken() {
-    this.data.getNextToken();
-  }
 }
