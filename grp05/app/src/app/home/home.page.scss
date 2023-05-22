@@ -1,0 +1,36 @@
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  font-style: italic;
+  background-image: url("../../assets/bg.jpg");
+  background-size: cover;
+  padding: 20px;
+  color: white;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+.label {
+  color: #5505e4;
+  padding: 20px;
+  font-size: 24px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  background-color: #f0e3fd;
+}
+ion-grid {
+  background-color: #f0e3fd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  block-size: 100vh;
+}
+
+ion-button {
+  --background:#5505e4;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}

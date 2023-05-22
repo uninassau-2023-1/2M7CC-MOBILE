@@ -1,0 +1,38 @@
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.custom-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: #5505e4;
+    margin-bottom: 10px;
+}
+.label-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-size: 36px;
+    color: #5505e4;
+}
+
+ion-button {
+    --background:#5505e4;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+}
+
+ion-content {
+    --background: #f0e3fd;
+}
