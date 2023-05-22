@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <div class="flex-container">
+      <header>
+        <div id="menu-superior" class="center">
+          <p id="senha1">Realmente é a senha que deseja?</p>
+        </div>
+      </header>
+      <section class="content">
+          <div id="menu-inferior">
+            <div id="menu-inferior2">
+            <div class="botao">
+              <p class="list-element">SENHA DE EXAME</p>
+              <p class="list-element" id="senha-atual">230327-SP01</p>
+            </div>
+          </div>
+          <div id='menu-comfirm'>
+            <button id="voltar" (click)="redirectToPreviousPage()">Voltar</button>
+            <button id="confirmar" (click)="redirectToNextPage()">Confirmar</button>
+          </div>
+          </div>
+
+          
+      </section>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">tab2comfirmation</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>

@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+}
+  
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+  
+header {
+    background-color: #274173;
+    color: #fff;
+}
+  
+section.content {
+    flex: 1;
+}
+
+#menu-superior{
+    font-size: 50px;
+    display: flex;
+    justify-content:space-between;
+    color: white;
+    font-family: 'Comfortaa';
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#menu-inferior{
+    height: 100%;
+    display: inline;
+    
+    margin-left: 35%;
+    margin-right: 35%;
+    margin-top: 100px ;
+}
+
+#menu-inferior2{
+    display: block;
+    background: linear-gradient(139.11deg, #364A63 0%, #1D1E2C 94.98%);
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 600px;
+}
+
+
+#menu-comfirm{
+    margin-top: 35%;
+    display: flex;
+    font-size: 50px;
+    font-family: 'Comfortaa';
+    align-items: center;
+    justify-content: center;
+}
+
+#voltar{
+    font-size: 45px; 
+    background-color:#7B7B7B;
+    padding: 15px;
+    border-radius: 15px;
+    color: white;
+}
+
+#prox{
+    font-size: 45px;
+    background: linear-gradient(99.89deg, #4F8178 7.17%, #2A5974 76.15%);
+    padding: 15px;
+    border-radius: 15px;
+    color: white;
+}
+
+button {   
+
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;        
+}
+
+.content{
+    display: flex;
+    justify-content:space-between;
+}
+
+.list-element{
+    margin-left: 10%;
+    color: white;
+    min-width: 450px;
+    font-size: 50px;
+}
+
+#senha-atual{
+    margin-left: 150px;
+}
+
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .list-element {
+      font-size: 40px;
+      min-width: 450px;
+      margin-top: 10px;
+    }
+    #menu-inferior {
+        margin-left: 5%;
+        margin-right: 25%;
+      }
+    #menu-inferior2 {
+        max-width: 500px;
+    }
+      
+    
+    .botao{
+        margin-top: 50px;
+    }
+
+    #senha1{
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    .content{
+        margin-right: 30%;
+    }
+  }

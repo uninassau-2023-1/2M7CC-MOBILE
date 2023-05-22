@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+}
+  
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+  
+header {
+    background-color: #3F51B5;
+    color: #fff;
+}
+  
+section.content {
+    flex: 1;
+}
+
+#menu-superior{
+    font-size: 50px;
+    display: flex;
+    justify-content:space-between;
+    background-color: #274173;
+    color: white;
+    font-family: 'Comfortaa';
+    height: 20%;
+}
+#senha1{
+    margin-left: 17%;
+    margin-right: 5%;
+}
+#senha2{
+    justify-content: right;
+    margin-right: 6%;
+}
+
+#menu-inferior{
+    margin-left: 12%;
+    margin-top: 12%;
+    font-size: 100px;
+    height: 100%;
+    margin-right: 5%;
+}
+#menu-lateral{
+    justify-content: right;
+    margin-right: 6%;
+    font-size: 55px;
+}
+
+.content{
+    display: flex;
+    justify-content:space-between;
+}
+
+.list-element{
+    background: linear-gradient(139.11deg, #364A63 0%, #1D1E2C 94.98%);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
