@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">  
+  <ion-toolbar>
+    <ion-title>
+      Senhas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">  
+  <ion-card class="select-password">
+    <ion-text color="dark">
+      <h1>Escolha o tipo de senha</h1>
+    </ion-text>
+    <ion-list>
+      <ion-radio-group  value="SG" [(ngModel)]="typeTicket">
+        <ion-item>
+          <ion-label>Normal</ion-label>
+          <ion-radio slot="end" value="SG"></ion-radio>
+        </ion-item>
+    
+        <ion-item>
+          <ion-label>Preferencial</ion-label>
+          <ion-radio slot="end" value="SP"></ion-radio>
+        </ion-item>
+    
+        <ion-item>
+          <ion-label>Retirada de exame</ion-label>
+          <ion-radio slot="end" value="SE"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+    <ion-button expand="block" fill="clear" (click)="gotoChamandoSenha()" [disabled]="this.sa.excededTime === true ? true : false">
+      {{this.sa.excededTime === true ? "Senhas Esgotadas" : "gerar Senha"}}
+    </ion-button>     
+  </ion-card>
+</ion-content>

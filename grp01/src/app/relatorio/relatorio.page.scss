@@ -1,0 +1,38 @@
+ion-title{
+    text-align: center;
+    text-transform: capitalize;
+}
+
+* {
+    --SP-color: # caa628                  ;
+    --SE-color: #305FBB;
+    --SN-color: #   ;   
+    background: transparent;
+    background-color: transparent;
+}
+
+ion-card{    
+    max-width: 1000px;
+    margin: 30px auto;
+}
+
+.preferencial{
+    
+    background: rgb(202,166,40);
+    background: linear-gradient(156deg, rgba(202,166,40,0.16988793808539038) 0%, rgba(242,255,241,1) 100%); 
+}
+
+.geral{
+    background: rgb(48,187,62);
+    background: linear-gradient(156deg, rgba(48,187,62,0.20) 0%, rgba(242,255,241,1) 100%); 
+}
+
+.exame{
+    background: rgb(48,95,187);
+    background: linear-gradient(156deg, rgba(48,95,187,0.20) 0%, rgba(242,255,241,1) 100%); 
+
+}
+
+.geral ion-item, .preferencial ion-item,.exame ion-item{
+    border-radius: 5px;
+}

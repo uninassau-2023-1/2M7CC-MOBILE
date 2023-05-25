@@ -1,0 +1,81 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button class="back-btn" (click)="gotoAtendimento()">
+        <ion-icon name="arrow-back-outline"></ion-icon>        
+      </ion-button>
+    </ion-buttons>
+    <ion-title>relatório</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card class="total">
+    <ion-card-header>      
+      <ion-card-title>Quantitativo geral das senhas</ion-card-title>     
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label>Totais Emitidas: {{this.relatorioAtual.quantityTickets}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Totais Atendidas: {{this.relatorioAtual.quantityAcceptedTicket}}</ion-label>
+        </ion-item>      
+      </ion-list>      
+    </ion-card-content>    
+  </ion-card>
+
+  <ion-card class="preferencial">
+    <ion-card-header>      
+      <ion-card-title>Quantitativo de Senhas Preferenciais</ion-card-title>     
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label>Emitidas: {{this.relatorioAtual.quantitySP}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Atendidas: {{this.relatorioAtual.quantitySPAccepted}}</ion-label>
+        </ion-item>      
+      </ion-list>      
+    </ion-card-content>    
+  </ion-card>
+
+  <ion-card class="geral">
+    <ion-card-header>      
+      <ion-card-title>Quantitativo de Senhas Gerais</ion-card-title>     
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label>Emitidas: {{this.relatorioAtual.quantitySG}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Atendidas: {{this.relatorioAtual.quantitySGAccepted}}</ion-label>
+        </ion-item>      
+      </ion-list>      
+    </ion-card-content>    
+  </ion-card> 
+
+  <ion-card class="exame">
+    <ion-card-header>      
+      <ion-card-title>Quantitativo de senhas de Retirada de Exames</ion-card-title>     
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label>Emitidas: {{this.relatorioAtual.quantitySE}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Atendidas: {{this.relatorioAtual.quantitySEAccepted}}</ion-label>
+        </ion-item>      
+      </ion-list>      
+    </ion-card-content>    
+  </ion-card>
+
+</ion-content>

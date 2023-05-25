@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title color="dark">Atendimento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="atendimento-container">
+    <ion-card class="atendimento">
+      <ion-card-content class="atendimento-info">
+  
+        <div class="seuGuiche-senha">        
+          <ion-text class="seuGuiche-header" color="light">
+            <h2>Seu Guichê</h2>
+          </ion-text>      
+        
+          <ion-text class="seuGuiche-text" color="light">
+            <p>Guichê 0{{this.sa.guiche}}</p>
+          </ion-text>               
+        </div>
+  
+        <div class="senhaAtual">
+          <div class="tipoSenha"                    
+          [style.background-color]="this.ticketType == 'Senha Normal' ? '#30BB3E' : this.ticketType == 'Senha Preferencial' ? '#CAA628' : this.ticketType == 'Retirada de exame' ? '#6B7FC1' : 'transparent'">
+            <ion-text color="light">
+              <p>{{this.ticketType}}</p>
+            </ion-text>
+          </div>
+          <ion-text class="senha-atendimento">
+            <h2 [style.color]="this.ticketType == 'Senha Normal' ? '#30BB3E' : this.ticketType == 'Senha Preferencial' ? '#CAA628' : this.ticketType == 'Retirada de exame' ? '#6B7FC1' : 'transparent'">
+              {{this.sa.currentTicket}}
+            </h2>
+          </ion-text>
+        </div>
+  
+      </ion-card-content>
+  
+      <ion-card-content class="alerta">      
+        <ion-icon name="notifications" size="large" color="light"></ion-icon>
+        <ion-text color="light">
+          <h2>Por favor, comparecer ao seu guichê!</h2>        
+        </ion-text>
+      </ion-card-content>
+    </ion-card>
+    <div class="controle">
+      <ion-button (click)="gotoSenha()" expand="block" fill="clear">
+        Finalizar
+      </ion-button>
+      <ion-button (click)="gotoRelatorio()" expand="block" fill="clear">
+        Relatorio
+      </ion-button>
+      <ion-button (click)="onClickProxSenha()" expand="block" fill="clear">
+        Proxima Senha
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

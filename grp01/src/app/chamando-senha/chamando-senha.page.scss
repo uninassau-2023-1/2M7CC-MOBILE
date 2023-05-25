@@ -1,0 +1,159 @@
+* {
+    --SP-color: #CAA628;
+    --SE-color: #305FBB;
+    --SN-color: #30BB3E;    
+}
+
+ion-card{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.chamandoSenha{
+    width: 100%;
+    margin-top: 10px; 
+}
+
+.tipoSenha {
+    max-width: 200px;
+    padding: 5px 0;
+    margin: 10px 0;  
+    border-radius: 5px; 
+    background-color: var(--SP-color);   
+}
+
+.tipoSenha p {
+    height: 20px;        
+    text-align: center;
+    font-weight: bold; 
+}
+
+.senhaAtual {
+    display: flex;      
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;  
+    padding: 5px;  
+    border-width: 2px;
+    border-color: #1B1B1B;
+    border-style: solid;
+    border-radius: 5px;
+}
+
+.senhaAtual p{
+    font-size: 20px;    
+}
+
+.senha p{
+    color: var(--SP-color);
+    font-weight: bold;    
+}
+
+.historico-senhas-container {
+    margin-top: 20px;
+    border: 2px solid #1B1B1B;
+    border-radius: 5px;
+}
+
+.historico-senhas-header{
+    margin-top: 10px;
+}
+
+.historico-senhas-header h2{
+    text-align: center;    
+    font-weight: bold;
+}
+
+.historico-senhas ion-item ion-text{
+    width: 200px;
+    padding: 5px 10px;      
+    border-radius: 5px;    
+}
+
+.historico-senhas ion-item ion-text p{
+    text-transform: capitalize;    
+    font-weight: bold;
+    text-align: center;
+}
+
+.suaSenha-container {
+    display: flex;
+    height: 100px;
+    background-image: linear-gradient(180deg, #1B1B1B 0%, rgba(27, 27, 27, 0.83) 100%, rgba(27, 27, 27, 0.99) 100%);
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;  
+    margin-top: 20px;
+    border-radius: 5px;
+    margin: 0 16px;
+}
+
+.suaSenha-senha, .suaSenha-tipo {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    margin: 5px;    
+    flex-direction: column;    
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.suaSenha-header {    
+    text-align: center;    
+    margin: 5px 0;      
+}
+
+.suaSenha-text{
+    text-align: center;    
+    margin-top: 10px;
+    transform: translateY(-50%);        
+}
+
+.suaSenha-text p{
+    font-weight: bold;
+    font-size: 18px;    
+}
+
+.suaSenha-tipo{
+    border: none;       
+}
+
+.suaSenha-tipo p{
+    color: var(--SP-color);       
+}
+
+.alerta{
+    display: flex;
+    align-items: center;    
+}
+.alerta ion-text{
+    margin: 0 5px;       
+}
+
+.gerarSenha{
+    display: flex;
+}
+
+.gerarSenha ion-button{
+    width: 150px;
+    margin: 0 auto;
+    background-color: #1B1B1B;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.title-tab{
+    text-align: center;
+    color: #1B1B1B;
+}
+
+.sp-container{
+    background-color: var(--SP-color);
+}
+.sn-container{
+    background-color: var(--SN-color);
+}
+.se-container{
+    background-color: var(--SE-color);
+}

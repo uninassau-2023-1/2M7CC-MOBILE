@@ -1,0 +1,7 @@
+{
+  "name": "projetoTotem",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

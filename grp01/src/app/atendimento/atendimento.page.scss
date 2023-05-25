@@ -1,0 +1,119 @@
+* {
+    --SP-color: #CAA628;
+    --SE-color: #305FBB;
+    --SN-color: #30BB3E;    
+}
+
+ion-title{
+    text-align: center;
+}
+
+.atendimento-container{
+    display: flex;
+    height: 100%;
+    padding: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.atendimento{
+    width: 100%;
+    max-width: 1000px;
+    background: linear-gradient(180deg, #1B1B1B 0%, rgba(27, 27, 27, 0.83) 100%, rgba(27, 27, 27, 0.99) 100%);
+    margin: 0 auto;    
+}
+
+.atendimento-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.senhaAtual{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.seuGuiche-senha, .seuGuiche-tipo {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    margin: 5px;    
+    flex-direction: column; 
+}
+
+.seuGuiche-header h2{     
+    margin: 5px 0;
+    font-weight: bold;     
+}
+
+.seuGuiche-text{
+    margin-top: 10px;          
+}
+
+.seuGuiche-text p{    
+    font-size: 18px;   
+}
+
+.seuGuiche-tipo p{
+    color: var(--SP-color);           
+}
+
+
+.tipoSenha {
+    max-width: 200px;
+    padding: 5px 0;
+    margin: 10px 0;  
+    border-radius: 5px; 
+    background-color: var(--SP-color);   
+}
+
+.tipoSenha p {
+    height: 20px;        
+    text-align: center;
+    font-weight: bold;
+}
+
+.senha-atendimento {
+    width: 150px;
+}
+
+.senha-atendimento h2{
+    font-weight: bold;
+    color: var(--SP-color);
+    font-size: 20px;
+}
+
+.alerta{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;    
+    margin: 40px 10px 10px 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.alerta h2{
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0 5px;
+}
+
+.controle{
+    display: flex;
+    width: 100%;
+    margin-top: 100px;
+    justify-content: space-around;
+}
+
+.controle ion-button{
+    width: 150px;
+    background-color: #1B1B1B;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}

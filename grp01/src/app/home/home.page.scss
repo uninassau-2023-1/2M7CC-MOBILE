@@ -1,0 +1,46 @@
+ion-title{
+  text-align: center;
+
+}
+
+.select-password {
+  display: flex;    
+  align-items: center;  
+  justify-content: center;  
+  flex-direction: column;
+  height: 100%;  
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.select-password h1{
+  text-align: center;
+}
+
+.select-password ion-button{    
+  background-color: #1B1B1B;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;    
+}
+
+.select-password ion-button{
+  width: 150px;
+  margin-top: 50px;
+}
+
+.select-password h1{
+  margin-bottom: 50px;     
+}
+
+.select-password ion-list{
+  border-width: 1px;
+  border-color: #1B1B1B;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.select-password ion-list{
+  max-width: 1000px;
+  width: 100%;     
+}
