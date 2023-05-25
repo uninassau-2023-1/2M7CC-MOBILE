@@ -43,6 +43,8 @@ export class DataService {
     },
   ];
 
+  public usedTokens: Token[] = [] as Token[];
+
   constructor(private storage: Storage) {
     this.ngOnInit();
   }
@@ -56,69 +58,73 @@ export class DataService {
     this.getNextTokenStorage();
   }
 
-  private generateRandomType() {
+  private setItem(key: string, value: any) {
+    this._storage?.set(key, JSON.stringify(value));
+  }
+
+  private async getItem(key: string): Promise<any> {
+    const result = await this._storage?.get(key);
+    if (result && result != null) return JSON.parse(result);
+  }
+
+  private async removeItem(key: string): Promise<any> {
+    await this._storage?.remove(key);
+  }
+
+  private generateRandomType(maxValue: number = 2) {
     return [TokenType.SG, TokenType.SE, TokenType.SP][
-      Math.floor(Math.random() * (2 - 0 + 1) + 0)
+      Math.floor(Math.random() * (maxValue - 0 + 1) + 0)
     ];
   }
   private async getUserTokenStorage() {
-    const item = await this._storage?.get("userToken");
-    const itemType = await this._storage?.get("userTokenType");
-    if (item && item != null) {
+    const item = await this.getItem("userToken");
+    const itemType = await this.getItem("userTokenType");
+    if (item) {
       this.setItem("userToken", item);
-      this.userToken = JSON.parse(item);
+      this.userToken = item;
     }
-    if (itemType !== null) {
-      console.log("ITEM TYPE", itemType);
-      this.userTokenType = parseInt(JSON.parse(itemType), 10);
+    if (itemType) {
+      this.userTokenType = parseInt(itemType, 10);
     }
   }
 
   private async getNextTokenStorage() {
-    const item = await this._storage?.get("nextToken");
-    if (item && item != null) {
+    const item = await this.getItem("nextToken");
+    if (item) {
       this.setItem("nextToken", item);
-      this.nextToken = JSON.parse(item);
+      this.nextToken = item;
     }
   }
 
   private async populateStorage() {
-    const item = await this._storage?.get("tokens");
-    if (!item || item == null) {
-      this.setItem("tokens", JSON.stringify(this.tokens));
+    const item = await this.getItem("tokens");
+    if (!item) {
+      this.setItem("tokens", this.tokens);
     } else {
-      this.tokens = JSON.parse(item);
+      this.tokens = item;
     }
   }
-
-  private setItem(key: string, value: string) {
-    this._storage?.set(key, value);
+  public async getTokens(): Promise<Token[]> {
+    const items = await this.getItem("tokens");
+    if (items) {
+      this.tokens = items;
+      return items;
+    }
+    return this.tokens;
   }
 
   public async generateTokens(): Promise<void> {
-    const item = await this._storage?.get("tokens");
-    if (item && item !== null) {
-      const oldTokens = JSON.parse(item);
-      oldTokens.push(
-        this.generateNewToken(
-          new Date().getTime().toString(),
-          this.generateRandomType()
-        )
-      );
+    const oldTokens = await this.getTokens();
 
-      this.setItem("tokens", JSON.stringify(oldTokens));
-      this.tokens = oldTokens;
-    }
-  }
+    oldTokens.push(
+      this.generateNewToken(
+        new Date().getTime().toString(),
+        this.generateRandomType()
+      )
+    );
 
-  public async getTokens(): Promise<Token[]> {
-    const item = await this._storage?.get("tokens");
-    if (item && item !== null) {
-      this.tokens = JSON.parse(item);
-      return JSON.parse(item);
-    }
-
-    return this.tokens;
+    this.setItem("tokens", oldTokens);
+    this.tokens = oldTokens;
   }
 
   public getTokenById(id: number): Token {
@@ -127,13 +133,12 @@ export class DataService {
 
   public async addToken(token: Token): Promise<Token[]> {
     this.tokens.push(token);
-    const item = await this._storage?.get("tokens");
-    if (item && item !== null) {
-      const oldTokens = JSON.parse(item);
-      oldTokens.push(token);
-      this.setItem("tokens", JSON.stringify(oldTokens));
-      this.tokens = oldTokens;
-    }
+
+    const oldTokens = await this.getTokens();
+    oldTokens.push(token);
+    this.setItem("tokens", oldTokens);
+    this.tokens = oldTokens;
+
     return this.tokens;
   }
 
@@ -144,54 +149,62 @@ export class DataService {
       1
     );
     this.tokens = newTokens;
-    this.setItem("tokens", JSON.stringify(newTokens));
+    this.setItem("tokens", newTokens);
   }
 
   public findTokenByUserId(userId: string): Token | undefined {
     return this.tokens.find((token) => token.userId === userId);
   }
 
-  public generateNewToken(userId: string, customType?: TokenType): Token {
-    const type = customType
-      ? customType
-      : this.userTokenType
-      ? this.userTokenType
-      : TokenType.SG;
-    const tokenValue = `${new Date().getFullYear()}${
+  private tokenValueBuilder(tokenType: TokenType) {
+    return `${new Date().getFullYear()}${
       new Date().getMonth() + 1
-    }${new Date().getDate()}-${TokenType[type]}${this.tokens.length + 1}`;
+    }${new Date().getDate()}-${TokenType[tokenType]}${this.tokens.length + 1}`;
+  }
 
-    const userToken = this.findTokenByUserId(userId);
-    if (Boolean(userToken) && userToken != undefined) return userToken;
-    const newToken: Token = {
+  private tokenBuilder(type: TokenType, value: string, userId: string): Token {
+    return {
       id: new Date().getTime(),
-      value: tokenValue,
-      type: type,
+      value,
+      type,
       userId,
     };
+  }
+
+  public generateNewToken(userId: string, customType?: TokenType): Token {
+    const userToken = this.findTokenByUserId(userId);
+    if (Boolean(userToken) && userToken != undefined) return userToken;
+
+    const type = (customType ? customType : this.userTokenType) || TokenType.SG;
+    const tokenValue = this.tokenValueBuilder(type);
+
+    const newToken: Token = this.tokenBuilder(type, tokenValue, userId);
+
     this.addToken(newToken);
+
     if (!this.userToken.value) {
       this.userToken = newToken;
-      this.setItem("userToken", JSON.stringify(newToken));
+      this.setItem("userToken", newToken);
     }
     return newToken;
   }
 
-  private checkType(item: Token): boolean {
-    const hasPriority = this.tokens.find((item) => item.type === TokenType.SP);
-    switch (this.lastType) {
+  private checkType(
+    item: Token,
+    lastType: TokenType,
+    hasPriority: boolean
+  ): boolean {
+    switch (lastType) {
       case TokenType.SE: {
         if (hasPriority) return item.type === TokenType.SP;
         if (!hasPriority && item.type !== TokenType.SE)
           return item.type === TokenType.SG;
-
         return item.type === TokenType.SE;
       }
       case TokenType.SG: {
         if (hasPriority) return item.type === TokenType.SP;
         if (!hasPriority) return item.type === TokenType.SE;
-
-        return item.type === TokenType.SE;
+        return item.type === TokenType.SG;
       }
       default: {
         if (![TokenType.SG, TokenType.SE].includes(item.type) && hasPriority)
@@ -202,22 +215,25 @@ export class DataService {
   }
 
   public getNextToken(): Token | undefined {
-    console.log(this.lastType);
-    const next = this.tokens.find((item) => this.checkType(item));
+    const hasPriority = this.tokens.find((item) => item.type === TokenType.SP);
+    const next = this.tokens.find((item) =>
+      this.checkType(item, this.lastType, Boolean(hasPriority))
+    );
+
     if (next) {
       if (this.userToken.value === next.value) {
         this.userToken.value = `É a sua vez! ${this.userToken.value}`;
-        this.setItem("userToken", JSON.stringify(this.userToken));
+        this.setItem("userToken", this.userToken);
       }
       if (!this.tokens.find((item) => item.id === this.userToken.id)) {
         this.userToken = {} as Token;
         this.userTokenType = undefined;
-        this._storage?.remove("userToken");
-        this._storage?.remove("userTokenType");
+        this.removeItem("userToken");
+        this.removeItem("userTokenType");
       }
       this.nextToken = next;
       this.lastType = next.type;
-      this.setItem("nextToken", JSON.stringify(next));
+      this.setItem("nextToken", next);
 
       this.removeToken(next);
     }
@@ -227,6 +243,6 @@ export class DataService {
   public setUserTokenType(type: TokenType) {
     if (Boolean(this.userTokenType)) return;
     this.userTokenType = type;
-    this.setItem("userTokenType", JSON.stringify(type));
+    this.setItem("userTokenType", type);
   }
 }

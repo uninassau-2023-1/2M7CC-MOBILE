@@ -10,7 +10,16 @@
       {{this.data.nextToken.value}}
     </h6>
   </div>
-  <ion-list>
+  <div class="empty-state-container">
+    <ion-img
+      *ngIf="!this.data.tokens.length"
+      src="../../assets/empty-state.png"
+      class="empty-img"
+    ></ion-img>
+    <h6 class="tokens-label">Não existem mais senhas para serem chamadas!</h6>
+    <ion-button fill="clear">Deseja gerar um relatório?</ion-button>
+  </div>
+  <ion-list *ngIf="this.data.tokens.length">
     <h6 class="tokens-label">Senhas</h6>
     <app-tokens
       *ngFor="let token of this.data.tokens"
@@ -27,6 +36,7 @@
   fill="solid"
   size="large"
   color="success"
+  disabled="{{!this.data.tokens.length}}"
 >
   Próxima senha
 </ion-button>
