@@ -110,7 +110,7 @@ export class DataService {
     this.setItem("tokens", this.tokens);
   }
 
-  private sortTokens(types: TokenType[]) {
+  /*   private sortTokens(types: TokenType[]) {
     return this.tokens.sort((a, b) => {
       if (a.type === types[0]) {
         return -1;
@@ -124,9 +124,9 @@ export class DataService {
         return 0;
       }
     });
-  }
+  } */
 
-  private findNextToken() {
+  /*   private findNextToken() {
     const lastItem = this.usedTokens[this.usedTokens.length - 1];
     if (lastItem?.type)
       if (lastItem.type === TokenType.SP) {
@@ -136,6 +136,50 @@ export class DataService {
       }
     else this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
     return this.tokens;
+  } */
+
+  private sortTokens() {
+    return this.tokens.slice().sort((a, b) => a.order - b.order);
+  }
+
+  private findNextToken() {
+    const tokens = this.sortTokens();
+    const lastCalledType = this.usedTokens[this.usedTokens.length - 1]?.type;
+    const beforeLastType = this.usedTokens[this.usedTokens.length - 2]?.type;
+    const seTokens = tokens.filter((item) => item.type === TokenType.SE);
+    const sgTokens = tokens.filter((item) => item.type === TokenType.SG);
+    const spTokens = tokens.filter((item) => item.type === TokenType.SP);
+    let idx = 0;
+    if (!this.usedTokens.length)
+      idx = tokens.findIndex((item) => item.type === TokenType.SP);
+    if (lastCalledType === TokenType.SP) {
+      if (beforeLastType === TokenType.SG && !seTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SG);
+      } else if (beforeLastType === TokenType.SG && seTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SE);
+      } else if (beforeLastType === TokenType.SE && !sgTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SE);
+      } else if (beforeLastType === TokenType.SE && sgTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SG);
+      }
+
+      if (spTokens.length && !seTokens.length && !sgTokens.length)
+        idx = tokens.findIndex((item) => item.type === TokenType.SP);
+    } else {
+      if (spTokens.length)
+        idx = tokens.findIndex((item) => item.type === TokenType.SP);
+      else if (beforeLastType === TokenType.SG && !seTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SG);
+      } else if (beforeLastType === TokenType.SG && seTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SE);
+      } else if (beforeLastType === TokenType.SE && !sgTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SE);
+      } else if (beforeLastType === TokenType.SE && sgTokens.length) {
+        idx = tokens.findIndex((item) => item.type === TokenType.SG);
+      }
+    }
+
+    return { next: tokens[idx], idx: idx };
   }
 
   public setUserTokenType(tokenType: TokenType) {
@@ -155,8 +199,9 @@ export class DataService {
   }
 
   public async getNextToken() {
-    const next = this.findNextToken()[0];
-    this.tokens.splice(0, 1);
+    const { next, idx } = this.findNextToken();
+    if (next == null) return;
+    this.tokens.splice(idx, 1);
     this.nextToken = next;
     next.calledTime = new Date().getTime();
     this.usedTokens.push(next);
