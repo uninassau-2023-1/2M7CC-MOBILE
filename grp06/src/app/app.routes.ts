@@ -10,8 +10,18 @@ export const routes: Routes = [
       import("./attendant/attendant.page").then((m) => m.AttendantPage),
   },
   {
+    path: "report",
+    loadComponent: () =>
+      import("./report/report.page").then((m) => m.ReportPage),
+  },
+  {
     path: "",
     redirectTo: "home",
     pathMatch: "full",
+  },
+  {
+    path: "report",
+    loadComponent: () =>
+      import("./report/report.page").then((m) => m.ReportPage),
   },
 ];

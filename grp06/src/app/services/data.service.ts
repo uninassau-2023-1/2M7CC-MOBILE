@@ -17,7 +17,8 @@ export interface Token {
   value: string;
   type: TokenType;
   userId: string;
-  called?: boolean;
+  calledTime?: number;
+  order: number;
 }
 
 @Injectable({
@@ -30,6 +31,13 @@ export class DataService {
 
   public tokens: Token[] = [];
   public usedTokens: Token[] = [] as Token[];
+  public userCalled?: boolean = false;
+
+  private counterTokenType = {
+    0: 0,
+    1: 0,
+    2: 0,
+  };
 
   constructor(private storage: Storage) {
     this.ngOnInit();
@@ -56,7 +64,9 @@ export class DataService {
   }
 
   private getSequenceNumber(typeCheck: TokenType) {
-    return this.tokens.filter((item) => item.type === typeCheck).length + 1;
+    this.counterTokenType[typeCheck] += 1;
+    this.setItem("counterTokenType", this.counterTokenType);
+    return this.counterTokenType[typeCheck];
   }
 
   private populateTokens() {
@@ -70,6 +80,7 @@ export class DataService {
           randomType,
           this.getSequenceNumber(randomType)
         ),
+        order: this.getSequenceNumber(randomType),
       });
     }
   }
@@ -79,14 +90,19 @@ export class DataService {
     const tokens = await this.getItem("tokens");
     const nextToken = await this.getItem("nextToken");
     const usedTokens = await this.getItem("usedTokens");
+    const userCalled = await this.getItem("userCalled");
+    const counterTokenType = await this.getItem("counterTokenType");
     if (userToken) this.userToken = userToken;
     if (tokens) {
       // Temp
-      if (!tokens.length) this.populateTokens();
+
       this.tokens = tokens;
     }
     if (nextToken) this.nextToken = nextToken;
     if (usedTokens) this.usedTokens = usedTokens;
+    if (userCalled) this.userCalled = userCalled;
+    if (counterTokenType) this.counterTokenType = counterTokenType;
+    this.populateTokens();
   }
 
   private async addToken(token: Token) {
@@ -118,7 +134,7 @@ export class DataService {
       } else {
         this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
       }
-    else this.tokens = this.sortTokens([TokenType.SP, TokenType.SE]);
+    else this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
     return this.tokens;
   }
 
@@ -142,27 +158,43 @@ export class DataService {
     const next = this.findNextToken()[0];
     this.tokens.splice(0, 1);
     this.nextToken = next;
-    next.called = true;
+    next.calledTime = new Date().getTime();
     this.usedTokens.push(next);
-
+    if (next.userId === this.userToken.userId) this.userCalled = true;
     await this.setItem("nextToken", this.nextToken);
     await this.setItem("tokens", this.tokens);
     await this.setItem("usedTokens", this.usedTokens);
+    await this.setItem("userCalled", this.userCalled);
+  }
+
+  public getReportValues() {
+    const mergedTokens = [...this.usedTokens, ...this.tokens];
+    return {
+      generatedTokens: this.usedTokens.length + this.tokens.length,
+      calledTokens: this.usedTokens.length,
+      priorityGeneratedTokens: mergedTokens.filter(
+        (item) => item.type === TokenType.SP
+      ).length,
+      priorityCalledTokens: mergedTokens.filter(
+        (item) => item.type === TokenType.SP && item.calledTime
+      ).length,
+      mergedTokens,
+    };
   }
 }
 
 function tokenValueGenerator(type: TokenType, sequenceNumber: number) {
   const year = new Date().getFullYear().toString().substring(2, 4);
   const month =
-    new Date().getMonth() > 10
+    new Date().getMonth() >= 10
       ? new Date().getMonth() + 1
       : `0${new Date().getMonth() + 1}`;
   const day =
-    new Date().getDate() > 10
+    new Date().getDate() >= 10
       ? new Date().getDate()
       : `0${new Date().getDate()}`;
 
   let localSequence =
-    sequenceNumber > 10 ? sequenceNumber : `0${sequenceNumber}`;
+    sequenceNumber >= 10 ? sequenceNumber : `0${sequenceNumber}`;
   return `${year}${month}${day}-${TypeString[type]}${localSequence}`;
 }

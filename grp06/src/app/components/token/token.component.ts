@@ -20,6 +20,7 @@ import { Token, TokenType } from "../../services/data.service";
 export class TokenComponent {
   private platform = inject(Platform);
   @Input() token?: Token;
+  @Input() showDateTime?: boolean;
   isIos() {
     return this.platform.is("ios");
   }
@@ -33,5 +34,10 @@ export class TokenComponent {
       default:
         return "SG\nGERAL";
     }
+  }
+  public getDateTimeString(calledTime?: number) {
+    if (!calledTime) return "";
+    const date = new Date(calledTime);
+    return `${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}`;
   }
 }

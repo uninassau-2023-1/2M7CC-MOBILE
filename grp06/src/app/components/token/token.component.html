@@ -8,8 +8,11 @@
     spBg: token.type === 2
   }"
 >
-  <h2>
-    {{ token.value }}
-  </h2>
+  <div>
+    <h2>
+      {{ token.value }}
+    </h2>
+    <h2 *ngIf="showDateTime">{{ this.getDateTimeString(token.calledTime) }}</h2>
+  </div>
   <h6 class="token-indicator">{{ tokenTypeToString(token.type) }}</h6>
 </div>

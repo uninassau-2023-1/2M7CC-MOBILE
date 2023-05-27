@@ -1,0 +1,27 @@
+.headerContainer {
+  background-color: #5635b5;
+  height: 72px;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+
+  align-items: center;
+}
+
+.token {
+  font-size: 1.75rem;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.content {
+  padding: 12px;
+}
+
+.report-text {
+  font-size: 1.25rem;
+  font-weight: bold;
+}

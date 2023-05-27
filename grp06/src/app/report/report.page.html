@@ -1,0 +1,59 @@
+<ion-content [fullscreen]="true">
+  <div class="headerContainer">
+    <ion-button href="/attendant" fill="clear">
+      <ion-icon
+        size="medium"
+        name="arrow-back-outline"
+        style="color: #fff"
+      ></ion-icon>
+    </ion-button>
+    <h6 class="token">Relatório</h6>
+  </div>
+  <div class="content">
+    <h6 class="report-text">
+      Qntd. Senhas Emitidas: {{this.data.getReportValues().generatedTokens}}
+    </h6>
+    <h6 class="report-text">
+      Qntd. Senhas Atendidas: {{this.data.getReportValues().calledTokens}}
+    </h6>
+    <h6 class="report-text">
+      Qntd. Senhas Emitidas (Prioridade):
+      {{this.data.getReportValues().priorityGeneratedTokens}}
+    </h6>
+    <h6 class="report-text">
+      Qntd. Senhas Atendidas (Prioridade):
+      {{this.data.getReportValues().priorityCalledTokens}}
+    </h6>
+    <h6 class="report-text">Relatório de senhas</h6>
+    <ion-accordion-group>
+      <ion-accordion value="first">
+        <ion-item slot="header" color="light">
+          <ion-label>Atendidas</ion-label>
+        </ion-item>
+        <ion-list
+          class="ion-padding"
+          slot="content"
+          *ngIf="this.data.usedTokens"
+        >
+          <app-tokens
+            *ngFor="let token of this.data.usedTokens"
+            [token]="token"
+            [showDateTime]="true"
+          ></app-tokens>
+        </ion-list>
+      </ion-accordion>
+      <ion-accordion value="second">
+        <ion-item slot="header" color="light">
+          <ion-label>Geradas</ion-label>
+        </ion-item>
+        <ion-list class="ion-padding" slot="content" *ngIf="this.data.tokens">
+          <app-tokens
+            *ngFor="let token of this.data.tokens"
+            [token]="token"
+            [showDateTime]="true"
+          ></app-tokens>
+        </ion-list>
+      </ion-accordion>
+    </ion-accordion-group>
+  </div>
+</ion-content>
