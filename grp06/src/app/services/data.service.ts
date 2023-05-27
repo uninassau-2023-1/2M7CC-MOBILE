@@ -110,34 +110,6 @@ export class DataService {
     this.setItem("tokens", this.tokens);
   }
 
-  /*   private sortTokens(types: TokenType[]) {
-    return this.tokens.sort((a, b) => {
-      if (a.type === types[0]) {
-        return -1;
-      } else if (b.type === types[0]) {
-        return 1;
-      } else if (a.type === types[1]) {
-        return -1;
-      } else if (b.type === types[1]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-  } */
-
-  /*   private findNextToken() {
-    const lastItem = this.usedTokens[this.usedTokens.length - 1];
-    if (lastItem?.type)
-      if (lastItem.type === TokenType.SP) {
-        this.tokens = this.sortTokens([TokenType.SE, TokenType.SG]);
-      } else {
-        this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
-      }
-    else this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
-    return this.tokens;
-  } */
-
   private sortTokens() {
     return this.tokens.slice().sort((a, b) => a.order - b.order);
   }
@@ -149,6 +121,7 @@ export class DataService {
     const seTokens = tokens.filter((item) => item.type === TokenType.SE);
     const sgTokens = tokens.filter((item) => item.type === TokenType.SG);
     const spTokens = tokens.filter((item) => item.type === TokenType.SP);
+
     let idx = 0;
     if (!this.usedTokens.length)
       idx = tokens.findIndex((item) => item.type === TokenType.SP);

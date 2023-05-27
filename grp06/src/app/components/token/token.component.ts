@@ -38,6 +38,8 @@ export class TokenComponent {
   public getDateTimeString(calledTime?: number) {
     if (!calledTime) return "";
     const date = new Date(calledTime);
-    return `${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}`;
+    const minutes =
+      date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+    return `${date.toLocaleDateString()} - ${date.getHours()}:${minutes}`;
   }
 }
