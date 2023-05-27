@@ -28,7 +28,7 @@ export class HomePage {
       value: TokenType.SG,
     },
   ];
-  private readonly userId = new Date().toTimeString();
+
   constructor() {}
 
   refresh(ev: any) {
@@ -38,7 +38,6 @@ export class HomePage {
   }
 
   getNewToken() {
-    this.data.generateNewToken(this.userId);
-    this.data.generateTokens();
+    this.data.generateUserToken();
   }
 }

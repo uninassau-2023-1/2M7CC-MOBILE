@@ -5,11 +5,19 @@ export enum TokenType {
   SE = 1,
   SP = 2,
 }
+
+export const TypeString = {
+  0: "SG",
+  1: "SE",
+  2: "SP",
+};
+
 export interface Token {
   id: number;
   value: string;
   type: TokenType;
   userId: string;
+  called?: boolean;
 }
 
 @Injectable({
@@ -19,30 +27,8 @@ export class DataService {
   private _storage: Storage | null = null;
   public nextToken: Token = {} as Token;
   public userToken: Token = {} as Token;
-  public userTokenType: TokenType | undefined = undefined;
-  private lastType: TokenType = TokenType.SP;
 
-  public tokens: Token[] = [
-    {
-      id: 0,
-      value: "230403-SG01",
-      type: TokenType.SG,
-      userId: "1",
-    },
-    {
-      id: 1,
-      value: "230403-SE02",
-      type: TokenType.SE,
-      userId: "2",
-    },
-    {
-      id: 2,
-      value: "230403-SP03",
-      type: TokenType.SP,
-      userId: "3",
-    },
-  ];
-
+  public tokens: Token[] = [];
   public usedTokens: Token[] = [] as Token[];
 
   constructor(private storage: Storage) {
@@ -53,13 +39,11 @@ export class DataService {
     // If using, define drivers here: await this.storage.defineDriver(/*...*/);
     const storage = await this.storage["create"]();
     this._storage = storage;
-    this.populateStorage();
-    this.getUserTokenStorage();
-    this.getNextTokenStorage();
+    this.getInformations();
   }
 
-  private setItem(key: string, value: any) {
-    this._storage?.set(key, JSON.stringify(value));
+  private async setItem(key: string, value: any) {
+    await this._storage?.set(key, JSON.stringify(value));
   }
 
   private async getItem(key: string): Promise<any> {
@@ -71,178 +55,114 @@ export class DataService {
     await this._storage?.remove(key);
   }
 
-  private generateRandomType(maxValue: number = 2) {
-    return [TokenType.SG, TokenType.SE, TokenType.SP][
-      Math.floor(Math.random() * (maxValue - 0 + 1) + 0)
-    ];
-  }
-  private async getUserTokenStorage() {
-    const item = await this.getItem("userToken");
-    const itemType = await this.getItem("userTokenType");
-    if (item) {
-      this.setItem("userToken", item);
-      this.userToken = item;
-    }
-    if (itemType) {
-      this.userTokenType = parseInt(itemType, 10);
-    }
+  private getSequenceNumber(typeCheck: TokenType) {
+    return this.tokens.filter((item) => item.type === typeCheck).length + 1;
   }
 
-  private async getNextTokenStorage() {
-    const item = await this.getItem("nextToken");
-    if (item) {
-      this.setItem("nextToken", item);
-      this.nextToken = item;
+  private populateTokens() {
+    for (let i = 0; i < 10; ++i) {
+      const randomType = Math.floor(Math.random() * 3);
+      this.addToken({
+        id: new Date().getTime(),
+        type: randomType,
+        userId: new Date().getTime().toString(),
+        value: tokenValueGenerator(
+          randomType,
+          this.getSequenceNumber(randomType)
+        ),
+      });
     }
   }
 
-  private async populateStorage() {
-    const item = await this.getItem("tokens");
-    if (!item) {
-      this.setItem("tokens", this.tokens);
-    } else {
-      this.tokens = item;
+  private async getInformations() {
+    const userToken = await this.getItem("userToken");
+    const tokens = await this.getItem("tokens");
+    const nextToken = await this.getItem("nextToken");
+    const usedTokens = await this.getItem("usedTokens");
+    if (userToken) this.userToken = userToken;
+    if (tokens) {
+      // Temp
+      if (!tokens.length) this.populateTokens();
+      this.tokens = tokens;
     }
-  }
-  public async getTokens(): Promise<Token[]> {
-    const items = await this.getItem("tokens");
-    if (items) {
-      this.tokens = items;
-      return items;
-    }
-    return this.tokens;
+    if (nextToken) this.nextToken = nextToken;
+    if (usedTokens) this.usedTokens = usedTokens;
   }
 
-  public async generateTokens(): Promise<void> {
-    const oldTokens = await this.getTokens();
-
-    oldTokens.push(
-      this.generateNewToken(
-        new Date().getTime().toString(),
-        this.generateRandomType()
-      )
-    );
-
-    this.setItem("tokens", oldTokens);
-    this.tokens = oldTokens;
-  }
-
-  public getTokenById(id: number): Token {
-    return this.tokens[id];
-  }
-
-  public async addToken(token: Token): Promise<Token[]> {
+  private async addToken(token: Token) {
     this.tokens.push(token);
+    this.setItem("tokens", this.tokens);
+  }
 
-    const oldTokens = await this.getTokens();
-    oldTokens.push(token);
-    this.setItem("tokens", oldTokens);
-    this.tokens = oldTokens;
+  private sortTokens(types: TokenType[]) {
+    return this.tokens.sort((a, b) => {
+      if (a.type === types[0]) {
+        return -1;
+      } else if (b.type === types[0]) {
+        return 1;
+      } else if (a.type === types[1]) {
+        return -1;
+      } else if (b.type === types[1]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
 
+  private findNextToken() {
+    const lastItem = this.usedTokens[this.usedTokens.length - 1];
+    if (lastItem?.type)
+      if (lastItem.type === TokenType.SP) {
+        this.tokens = this.sortTokens([TokenType.SE, TokenType.SG]);
+      } else {
+        this.tokens = this.sortTokens([TokenType.SP, TokenType.SP]);
+      }
+    else this.tokens = this.sortTokens([TokenType.SP, TokenType.SE]);
     return this.tokens;
   }
 
-  public removeToken(token: Token) {
-    const newTokens = [...this.tokens];
-    newTokens.splice(
-      this.tokens.findIndex((item) => item.id === token.id),
-      1
-    );
-    this.tokens = newTokens;
-    this.setItem("tokens", newTokens);
+  public setUserTokenType(tokenType: TokenType) {
+    this.userToken.type = tokenType;
   }
 
-  public findTokenByUserId(userId: string): Token | undefined {
-    return this.tokens.find((token) => token.userId === userId);
-  }
-
-  private tokenValueBuilder(tokenType: TokenType) {
-    return `${new Date().getFullYear()}${
-      new Date().getMonth() + 1
-    }${new Date().getDate()}-${TokenType[tokenType]}${this.tokens.length + 1}`;
-  }
-
-  private tokenBuilder(type: TokenType, value: string, userId: string): Token {
-    return {
-      id: new Date().getTime(),
-      value,
-      type,
-      userId,
+  public async generateUserToken() {
+    if (Boolean(this.userToken.value)) return;
+    const sequenceNumber = this.getSequenceNumber(this.userToken.type);
+    this.userToken = {
+      ...this.userToken,
+      userId: "1",
+      value: tokenValueGenerator(this.userToken.type, sequenceNumber),
     };
+    await this.setItem("userToken", this.userToken);
+    await this.addToken(this.userToken);
   }
 
-  public generateNewToken(userId: string, customType?: TokenType): Token {
-    const userToken = this.findTokenByUserId(userId);
-    if (Boolean(userToken) && userToken != undefined) return userToken;
+  public async getNextToken() {
+    const next = this.findNextToken()[0];
+    this.tokens.splice(0, 1);
+    this.nextToken = next;
+    next.called = true;
+    this.usedTokens.push(next);
 
-    const type = (customType ? customType : this.userTokenType) || TokenType.SG;
-    const tokenValue = this.tokenValueBuilder(type);
-
-    const newToken: Token = this.tokenBuilder(type, tokenValue, userId);
-
-    this.addToken(newToken);
-
-    if (!this.userToken.value) {
-      this.userToken = newToken;
-      this.setItem("userToken", newToken);
-    }
-    return newToken;
+    await this.setItem("nextToken", this.nextToken);
+    await this.setItem("tokens", this.tokens);
+    await this.setItem("usedTokens", this.usedTokens);
   }
+}
 
-  private checkType(
-    item: Token,
-    lastType: TokenType,
-    hasPriority: boolean
-  ): boolean {
-    switch (lastType) {
-      case TokenType.SE: {
-        if (hasPriority) return item.type === TokenType.SP;
-        if (!hasPriority && item.type !== TokenType.SE)
-          return item.type === TokenType.SG;
-        return item.type === TokenType.SE;
-      }
-      case TokenType.SG: {
-        if (hasPriority) return item.type === TokenType.SP;
-        if (!hasPriority) return item.type === TokenType.SE;
-        return item.type === TokenType.SG;
-      }
-      default: {
-        if (![TokenType.SG, TokenType.SE].includes(item.type) && hasPriority)
-          return item.type === TokenType.SP;
-        return [TokenType.SG, TokenType.SE].includes(item.type);
-      }
-    }
-  }
+function tokenValueGenerator(type: TokenType, sequenceNumber: number) {
+  const year = new Date().getFullYear().toString().substring(2, 4);
+  const month =
+    new Date().getMonth() > 10
+      ? new Date().getMonth() + 1
+      : `0${new Date().getMonth() + 1}`;
+  const day =
+    new Date().getDate() > 10
+      ? new Date().getDate()
+      : `0${new Date().getDate()}`;
 
-  public getNextToken(): Token | undefined {
-    const hasPriority = this.tokens.find((item) => item.type === TokenType.SP);
-    const next = this.tokens.find((item) =>
-      this.checkType(item, this.lastType, Boolean(hasPriority))
-    );
-
-    if (next) {
-      if (this.userToken.value === next.value) {
-        this.userToken.value = `É a sua vez! ${this.userToken.value}`;
-        this.setItem("userToken", this.userToken);
-      }
-      if (!this.tokens.find((item) => item.id === this.userToken.id)) {
-        this.userToken = {} as Token;
-        this.userTokenType = undefined;
-        this.removeItem("userToken");
-        this.removeItem("userTokenType");
-      }
-      this.nextToken = next;
-      this.lastType = next.type;
-      this.setItem("nextToken", next);
-
-      this.removeToken(next);
-    }
-    return next;
-  }
-
-  public setUserTokenType(type: TokenType) {
-    if (Boolean(this.userTokenType)) return;
-    this.userTokenType = type;
-    this.setItem("userTokenType", type);
-  }
+  let localSequence =
+    sequenceNumber > 10 ? sequenceNumber : `0${sequenceNumber}`;
+  return `${year}${month}${day}-${TypeString[type]}${localSequence}`;
 }
