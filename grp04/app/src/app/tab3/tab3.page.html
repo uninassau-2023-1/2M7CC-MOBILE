@@ -3,18 +3,18 @@
     <div class="flex-container">
       <header>
         <div id="menu-superior" class="center">
-          <p id="senha1">Sua Senha é:</p>
+          <p id="senha1">Senha Atual:</p>
         </div>
       </header>
       <section class="content">
           <div id="menu-inferior">
             <div id="menu-inferior2">
             <div class="botao">
-              <p class="list-element" id="senha-atual">230327-SP01</p>
+              <p class="list-element" id="senha-atual">{{ senhaValor }}</p>
             </div>
           </div>
           <div id="menu-comfirm">
-            <button id="prox" (click)="proximaSenha()">Próxima Senha</button>
+            <button id="prox" (click)="proximaSenha()" >Próxima Senha</button>
           </div>
           </div>
       </section>

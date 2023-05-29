@@ -10,13 +10,12 @@
           <div id="menu-inferior">
             <div id="menu-inferior2">
             <div class="botao">
-              <p class="list-element">SENHA DE EXAME</p>
-              <p class="list-element" id="senha-atual">230327-SP01</p>
+              <p id="senha-atual" class="list-element">{{ senhaValor }}</p>
             </div>
           </div>
           <div id='menu-comfirm'>
             <button id="voltar" (click)="redirectToPreviousPage()">Voltar</button>
-            <button id="confirmar" (click)="redirectToNextPage()">Confirmar</button>
+            <button id="confirmar" (click)="passconfirm()"(click)="redirectToNextPage()">Confirmar</button>
           </div>
           </div>
 
