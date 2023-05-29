@@ -59,10 +59,6 @@ export class DataService {
     if (result && result != null) return JSON.parse(result);
   }
 
-  private async removeItem(key: string): Promise<any> {
-    await this._storage?.remove(key);
-  }
-
   private getSequenceNumber(typeCheck: TokenType) {
     this.counterTokenType[typeCheck] += 1;
     this.setItem("counterTokenType", this.counterTokenType);
@@ -70,17 +66,18 @@ export class DataService {
   }
 
   private populateTokens() {
+    if (this.tokens.length) return;
     for (let i = 0; i < 10; ++i) {
       const randomType = Math.floor(Math.random() * 3);
       this.addToken({
-        id: new Date().getTime(),
+        id: new Date().getTime() + 1,
         type: randomType,
         userId: new Date().getTime().toString(),
         value: tokenValueGenerator(
           randomType,
           this.getSequenceNumber(randomType)
         ),
-        order: this.getSequenceNumber(randomType),
+        order: this.tokens.length + 1,
       });
     }
   }
@@ -93,11 +90,7 @@ export class DataService {
     const userCalled = await this.getItem("userCalled");
     const counterTokenType = await this.getItem("counterTokenType");
     if (userToken) this.userToken = userToken;
-    if (tokens) {
-      // Temp
-
-      this.tokens = tokens;
-    }
+    if (tokens) this.tokens = tokens;
     if (nextToken) this.nextToken = nextToken;
     if (usedTokens) this.usedTokens = usedTokens;
     if (userCalled) this.userCalled = userCalled;
@@ -111,7 +104,7 @@ export class DataService {
   }
 
   private sortTokens() {
-    return this.tokens.slice().sort((a, b) => a.order - b.order);
+    return [...this.tokens].slice().sort((a, b) => a.order - b.order);
   }
 
   private findNextToken() {
@@ -123,8 +116,10 @@ export class DataService {
     const spTokens = tokens.filter((item) => item.type === TokenType.SP);
 
     let idx = 0;
-    if (!this.usedTokens.length)
+    if (!this.usedTokens.length) {
       idx = tokens.findIndex((item) => item.type === TokenType.SP);
+      return { next: tokens[idx], idx: idx };
+    }
     if (lastCalledType === TokenType.SP) {
       if (beforeLastType === TokenType.SG && !seTokens.length) {
         idx = tokens.findIndex((item) => item.type === TokenType.SG);
@@ -174,7 +169,9 @@ export class DataService {
   public async getNextToken() {
     const { next, idx } = this.findNextToken();
     if (next == null) return;
-    this.tokens.splice(idx, 1);
+    const tokens = [...this.tokens];
+    tokens.splice(idx, 1);
+    this.tokens = tokens;
     this.nextToken = next;
     next.calledTime = new Date().getTime();
     this.usedTokens.push(next);
