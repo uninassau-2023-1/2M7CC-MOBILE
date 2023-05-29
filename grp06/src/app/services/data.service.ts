@@ -175,7 +175,8 @@ export class DataService {
     this.nextToken = next;
     next.calledTime = new Date().getTime();
     this.usedTokens.push(next);
-    if (next.userId === this.userToken.userId) this.userCalled = true;
+    if (next.userId === this.userToken.userId)
+      this.userCalled = true;
     await this.setItem("nextToken", this.nextToken);
     await this.setItem("tokens", this.tokens);
     await this.setItem("usedTokens", this.usedTokens);
