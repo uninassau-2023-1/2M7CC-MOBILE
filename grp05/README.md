@@ -6,9 +6,3 @@
 * Fabiano Gomes Ferreira de Andrade    01350374
 * Paulo Assis de Santana    01342224
 * Ruan Carlos Santana de Brito    01334208
-
-# 2023-05-22
-
-## Apresentação parcial
-
-* Correção na submissão do github
